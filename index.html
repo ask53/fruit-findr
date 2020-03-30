@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!-- please see the /js/scripts.js file for all comments --ASK, 22-April-2018  -->
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<meta name="author" content="ask53">
+		
+		<!-- cartodb css -->	<link rel="stylesheet" href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css"></link>
+		<!-- cartodb js -->		<script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
+		<!-- leaflet label -->	<script src="https://leaflet.github.io/Leaflet.label/leaflet.label.js"></script> 
+		
+		<!-- jquery -->			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<!-- global vars -->	<script src="vars/globals.js" type="text/javascript" /></script>
+		<!-- javascript -->		<script src="js/scripts.js" type="text/javascript" /></script>
+		
+		<!-- text file-->		<script src="text/display_English.js" type="text/javascript" /></script>
+		
+		<!-- stamen tiles -->	<script type="text/javascript" src="https://stamen-maps.a.ssl.fastly.net/js/tile.stamen.js"></script><!--Include Stamen JavaScript to get basemap tiles-->
+		
+		<!-- mapbox fullscrn-->	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+		<!-- mapbox fullscrn-->	<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+		
+		<!--jquery.corner.js-->	<script type="text/javascript" src="https://caminosdeagua.github.io/project-map/external/corners/jquery.corner.js"></script>
+		
+		<!-- google charts -->	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<!-- google viz API -->	<script type="text/javascript">google.charts.load('current', {packages: ['corechart']});	</script>
+	
+	</head>
+	
+	<body onload="init();"> 	<!-- what to do when the page loads -->
+		<div id="overlay" onclick="beginUserExperience();">
+			<div id="spacer"></div>
+			<div id="overlay_title"></div>
+			<div id="overlay_msg"></div>
+		</div>
+		<div id='fruitMap'> 	<!-- creates the div element that holds the map -->
+			<div class='cartodb-legend custom' id='legend' style="display: block; background-color: #dddddd;" onmouseenter="disableMapControls();" onmouseleave="enableMapControls();">	
+				<div class="legend-title", id="legend_title" style="font-size:14px;"></div>
+				<ul>
+					<li>
+						<div class="bullet" style="background:#24de17; text-transform:none" name="project_type"></div> 
+					</li>
+					<li>
+						<div class="bullet" style="background:#2eb7ff; text-transform:none" name="project_type"></div>
+					</li>
+					<li>
+						<div class="bullet" style="background:#b700ff; text-transform:none" name="project_type"></div>
+					</li>
+					<li>
+						<div class="bullet" style="background:#df3099; text-transform:none" name="project_type"></div>
+					</li>
+					<li>
+						<div class="bullet" style="background:#ffffff; text-transform:none" name="project_type" onclick="openFullSummary();"></div>
+					</li>
+				</ul>
+			</div>
+			
+			
+			
+		</div>
+	</body>
+</html>
+			
