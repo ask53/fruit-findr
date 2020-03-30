@@ -122,7 +122,6 @@ function fillText() {
 
 //-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 function initMap() {
-	alert();
 	map = new L.map('fruitMap', { //First, initialize the map
 		center: MAP_CENTER,
 		zoom: MAP_INIT_ZOOM,
@@ -131,9 +130,7 @@ function initMap() {
 		attributionControl: true,
 		fullscreenControl: true
 	});	
-	alert();
 	map.attributionControl.setPrefix(ATTRIBUTION);
-	alert();
 }
 //-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 
