@@ -141,6 +141,6 @@ var EASTER_EGG_TXT = {
 	laborHours: "Total number of person-hours of volunteer labor (8 hrs per person per day x 5 people over 5 days)"
 }
 
-var DISPLAY_TITLE = "<b>Project Map</b>";
-var DISPLAY_MSG = "Click to learn more about our work";
+var DISPLAY_TITLE = "<b>fruit findr</b>";
+var DISPLAY_MSG = "FIND FREE FRUIT";
 var ONGOING_PROJECT = "Present";

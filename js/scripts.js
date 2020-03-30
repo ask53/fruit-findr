@@ -29,6 +29,7 @@
 function init() {
 	if(detectMobile()) {adjustDisplayForMobile()} 
 								// check for mobile and adjust text size appropriately
+	showOverlay();
 	fillText();					// Fill in the text in the appropriate language
 	initMap(); 					// Initialize the map 
 	applyBaseMap(); 			// Display the map with the appropriate base tiles
@@ -73,6 +74,13 @@ function init() {
 // 	Update history:		4/APR/2018	aaron krupp		functional specification writen 						  	////
 
 //-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
+function showOverlay() {
+	document.getElementById("overlay_title").innerHTML = DISPLAY_TITLE;
+	document.getElementById("overlay_msg").innerHTML = DISPLAY_MSG;
+	$("#overlay").corner("keep 16px cc:#ff951c");	// adjust inner border corners
+	$("#overlay").css("display", "inline-block");	// display overlay once stuff loads!
+}
+
 function fillText() {
 	document.title = TITLE;
 	/*
@@ -676,7 +684,6 @@ function isEmpty(i, name) {
 
 function beginUserExperience() {
 	$("#overlay").fadeOut(800, function() {});	// fade out the overlay
-	restartCounters();							//	and restart the counters 	
 }
 
 
