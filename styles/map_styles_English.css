@@ -231,13 +231,12 @@ div.cartodb-legend {
 	font-size: 180px;
 	color: white;
 	position: relative;
-	padding: 0.25em;
 }
 
 #overlay_msg {
 	font-family: "Arbutus";
 	font-size: 72px;
-	margin-top: 0.75em;
+	margin-top: 1em;
 	color: white;
 	position: relative;
 	width: 100%;
