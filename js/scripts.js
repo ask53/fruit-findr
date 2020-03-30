@@ -1,168 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-// 											scripts.js
-//
-// 	Holds any javascript functions necessary for basic opperation universal
-// 	to all pages of the Caminos de Agua project-map. 
-//
-//	General description: This map shows all the projects worked on by the NGO
-//		Caminos de Agua. Data is read in from a public 
-//		Google Sheet (using the Google Visualization API)
-//		and plotted over stamen basemap tiles using leaflet's open source
-//		javascript library. When individual data points are selected, a window
-//		is opened to display various data about the selected project site.
-//		If the site has multiple projects, the opened data is called a "lobby"
-//		from which the user can navigate to a specific project. The specific project
-//		data, whether from an individual point or from a lobby, is displayed in
-//		the "info panel."
-//
-//	-- aaron krupp 22-apr-2018
-//
-////////////////////////////////////////////////////////////////////////////////
-//
-// 	TABLE OF CONTENTS:
-//
-// 	1. init():
-//			Calls other specific initialization functions.
-//
-// 	2. fillText():
-//			Fills in the text of the appropriate language.
-//
-// 	3. fillCounters():
-//			Fills the spinning project summary counters with the appropriate values
-//
-// 	4. initMap():
-//			Initializes the leaflet map object
-//
-// 	5. applyBaseMap():
-//			Applies the appropriate basemap tiles
-//	
-//	6. adjustXLocation(): 
-//			Adjusts the location of the closing-x-mark in the lobby/info panel to
-//			accomodate different scrollbar widths on different browsers
-//
-//	7. loadData():
-//			Loads the data from googleSheets and formats it as a JSON.
-//
-//	8. plotData(data);
-//			Plots the passed data, formatted as a JSON. 
-//
-//	8. getBin(data, i):
-//			figure out which color to make the point represented by the i-th row
-//			in the json dataset, data. 
-//
-//	9. openPanel(id) / closePanel(id):
-//			open or close the data panel for id = "info_panel" or "lobby"
-//
-//	10. showInfo(z):
-//			on the information panel, display the correct information for the z-th
-//			row of the dataset
-//
-//	11. showLobby(z):
-//			Displays the lobby (used when a single community has >1 project.) The
-//			lobby contains summary info about all of the communities projects. This
-//			function displays the lobby for the z-th data point. 
-//
-//	12. openFromLobby(z):
-//			When a project is clicked from the lobby, this opens the z-th info panel
-//			and displays the appropriate information
-//
-// 	13. getLabel(data, i):
-//			gets the appropriate label for the i-th point in dataset "data"
-//
-//	14. removePoint(i):
-//			removes the i-th point from the map
-//
-//	15. fadeIn(el) / fadeOut(el, threshhold): 
-//			fades in or out the element "el" using the appropriate opacity threshhold
-//
-//	16. onKeypress / goBack(key):
-//			checks to see if the keypress was "esc"
-//			and takes the user back one step in the lobby/info-panel chain
-//
-//	17. showSelectedMarker() / hideSelectedMarker():
-//			shows/hides a marker in the appropriate place to highlight which data
-//			point has been selected
-//			
-//	18. numberWithCommas(x) / numberWithoutCommas(x):
-//			Takes an int x and puts/removes commas ever 3rd digit
-//
-//	19. getScrollBarWidth():
-//			get the scrollbar width for the particular browser
-//
-//	20. openFullSummary(): 
-//			displays an easter-egg summary of all data to the console
-//
-//	21. map-wide summary functions: 
-//			totalProjects()
-//			totalPeople()
-//			totalCapacity()
-//			totalCartridgesAndSystems()
-//			totalCommunities()
-//			totalOther()
-//			totalRainSys()
-//			totalCeramic()
-//			totalPartners()
-//			totalWorkshops()
-//			totalHours()
-//			totalSchools()
-//				
-//			These functions generate totals by adding together the appropriate
-//			data from the appropriate rows of the dataset.
-//			
-//	22. individual point summary functions:
-//			projectsCompleted(point)
-//			peopleImpacted(point)
-//			storageInstalled(point)
-//			filtersDistributed(point)
-//
-//			These functions compute total data for a community with multiple
-//			projects by summing values from all of a community's projects.
-//
-//	23. isEmpty(i, name):
-//			returns t/f, checks to see if the ith row in the dataset has a name
-//
-//	24. beginUserExperience():
-//			removes the overlay and restarts the counters (makes map accessible 
-//			to clicks)
-//
-//	25. restartCounters():
-//			re-initializes the spinning counters. 
-//
-//	26. disableMapControls() / enableMapControls():
-//			disables and enables map controls for scrolling in lobby/info-panel
-//			and clicking on easter egg.
-//
-//	27. invert(obj):
-//			Takes lookup table and inverts the key-value pairs. Returns obj.
-//
-//	28. formatDate(date): 
-//			Takes in a date formatted dd-MMM-yyyy in english and returns it as
-//			dd/MMM/yyyy with MMM in the correct language. 
-//
-//	29. sendErrorMsg():
-//			Sends a GET request to a URL provided by Zapier to activate a webhook.
-//
-//	30. detectMobile():
-//			Returns true if user's device is cellphone or tablet, false otherwise.
-//
-//	31. adjustDisplayForMobile():
-//			Adjusts visible text from desktop to mobile display.
-//
-//
-////////////////////////////////////////////////////////////////////////////////
-//
-//	UPDATE HISTORY:
-//		29/SEP/2017	aaron krupp		document first written
-//		4/OCT/2017	aaron krupp		added initAdminIndifferent, initAdmin, and 
-//									initNonAdmin.
-//									Added CORS functionality for cross-domain 
-//									get/post requests
-//		22/APR/2018	aaron krupp		comments/table of contents updated
-//									functional specifications added
-//
-////////////////////////////////////////////////////////////////////////////////
-
-
 // 	1. init():
 //
 // 	Description:		Initializes the site.	
@@ -240,7 +75,6 @@ function init() {
 //-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 function fillText() {
 	document.title = TITLE;
-	
 	/*
 	document.getElementById("legend_title").innerHTML = LEGEND_TITLE;
 	els = document.getElementsByName("project_type");
@@ -288,6 +122,7 @@ function fillText() {
 
 //-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 function initMap() {
+	alert();
 	map = new L.map('fruitMap', { //First, initialize the map
 		center: MAP_CENTER,
 		zoom: MAP_INIT_ZOOM,
@@ -296,7 +131,9 @@ function initMap() {
 		attributionControl: true,
 		fullscreenControl: true
 	});	
+	alert();
 	map.attributionControl.setPrefix(ATTRIBUTION);
+	alert();
 }
 //-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 
@@ -976,7 +813,8 @@ function formatDate(d) {
 //
 // 	Update history:		07/MAR/2019	aaron krupp		functional specification & fn added
 
-function detectMobile() {	
+function detectMobile() {
+		
 	var check = false;
 	(function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
 	return check;
