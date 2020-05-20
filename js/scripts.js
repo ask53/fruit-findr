@@ -33,7 +33,7 @@ function init() {
 	fillText();					// Fill in the text in the appropriate language
 	initMap(); 					// Initialize the map 
 	applyBaseMap(); 			// Display the map with the appropriate base tiles
-	//loadData(); 				// Load the data for the default contaminant 
+	loadData(); 				// Load the data for the default contaminant 
 								// 	then plot the base markers on the map.	 	
 }								
 //-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
@@ -77,29 +77,12 @@ function init() {
 function showOverlay() {
 	document.getElementById("overlay_title").innerHTML = DISPLAY_TITLE;
 	document.getElementById("overlay_msg").innerHTML = DISPLAY_MSG;
-	$("#overlay").corner("keep 16px cc:#ff951c");	// adjust inner border corners
+	$("#overlay").corner("keep 16px cc:#8607c1");	// adjust inner border corners
 	$("#overlay").css("display", "inline-block");	// display overlay once stuff loads!
 }
 
 function fillText() {
 	document.title = TITLE;
-	/*
-	document.getElementById("legend_title").innerHTML = LEGEND_TITLE;
-	els = document.getElementsByName("project_type");
-	for(var i=0; i<els.length; i++){
-		els[i].innerHTML = LEGEND_TEXT[i];
-	}
-	
-	els = document.getElementsByClassName("stats_left");
-	for (var i=0; i<els.length; i++) {
-		els[i].innerHTML = SUMMARY_HEADERS[i];				
-	}
-	// load text onto overlay
-	document.getElementById("overlay_title").innerHTML = DISPLAY_TITLE;
-	document.getElementById("overlay_msg").innerHTML = DISPLAY_MSG;
-	$("#overlay").corner("keep 16px cc:#222");	// adjust inner border corners
-	$("#overlay").css("display", "inline-block");	// display overlay once stuff loads!
-	*/
 }
 //-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 
@@ -217,7 +200,7 @@ function loadData() {
 	var url = DATA_URL;
 	var options = {sendMethod: 'auto'};
 	var query = new google.visualization.Query(url, options);
-	query.setQuery('select * ORDER BY B,C');				// Relies on B being community name and C being start-date
+	query.setQuery('select * ORDER BY A,B');				// Relies on A being latitude and B being longitude in decimal format. 
 	query.send(onQueryResponse);
 							
 }
@@ -227,8 +210,7 @@ function onQueryResponse(response) {
 		throw new Error("data could not be retieved from Google sheets")
 	} else {
 		var data = googleDataTable2JSON(response.getDataTable());	// convert data to json
-		plotData(data);												// feed into plotting function
-		
+		organizeData(data);												// feed into plotting function
 		
 	}
 }
@@ -255,25 +237,93 @@ function googleDataTable2JSON(dataTable) {
 	return data											// after all looping is done, return the finalized json
 }
 
+function organizeData(d) {
+	
+	var dupCount = 0;
+	for (var i=0; i<d.length; i++) {
+		if(hasData(d,i)) {
+			alert("no error = 0")
+			d[i].dataError = NO;
+		} else {
+			alert("error = 1")
+			d[i].dataError = YES;
+		}
+	}
+	console.log(d)
+	return;
+	if (!d | d.length == 0) { // if no data is found...
+		alert("\nWe're having some trouble finding fruit for you, please check back again soon!\n\nIf you still see this message in a few hours, please let us know.\n\n\n")
+		return;
+	} else {
+		for (var i=0; i<d.length; i++) {
+			if (!toPlot(d, i)) {
+				dupCount++;
+				d[i].toPlot = NO;
+			} else {
+				d[i].toPlot = PENDING;
+				if(i>0) {
+					d[i-(dupCount+1)].toPlot = YES;
+					d[i-(dupCount+1)].dups = dupCount+1;
+					dupCount = 0;
+				}
+			}
+		}
+	AllData = d;
+	//plotData(data)
+	}
+	
+	
+}
+
+function hasData(d, i) {
+	// first check to make sure there is non-zero data
+	if (d[i][DATA_NAMES.lat] > LIMIT_UPPER_LAT | d[i][DATA_NAMES.lat] < LIMIT_LOWER_LAT) {
+		alert("1")
+		return false
+	}
+	if (d[i][DATA_NAMES.lng] > LIMIT_UPPER_LNG | d[i][DATA_NAMES.lng] < LIMIT_LOWER_LNG) {
+		alert("2")
+		return false
+	}
+	if (!d[i][DATA_NAMES.oranges] & !d[i][DATA_NAMES.grapefruit] & !d[i][DATA_NAMES.lemon] & !d[i][DATA_NAMES.lime] & !d[i][DATA_NAMES.other_citrus] & !d[i][DATA_NAMES.prickly_pear] & !d[i][DATA_NAMES.other]) {
+		alert("3")
+		return false;
+	}
+	return true;	
+}
 	
 function plotData(data) {
 	
 	base.Markers = [];
 	base.Popups = [];
-	selectedIcon = L.icon({
-		iconUrl: SELECTED_URL,
-		iconSize: LARGE_ICON_SIZE
-	});
 	var duplicateCounter = 0;
 	
 	AllData = data; 				// store data as global for later access.
-	if (!AllData | AllData.length == 0) {
-		// Add something here to do in case the data isn't loaded...
+
+	if (!AllData | AllData.length == 0) { // if no data is found...
+		alert("\nWe're having some trouble finding fruit for you, please check back again soon!\n\nIf you still see this message in a few hours, please let us know.\n\n\n")
+	} else {
+		for (var i=0; i<data.length; i++) {
+			if (!toPlot(data, i)) {
+				duplicateCounter++;
+			} else {
+				if(i>0) {
+					AllData[i-1].data 
+				}
+				
+			}
+			
+			
+			
+			
+			
+		}
+		
+		
 	}
 	
 	
 	
-	photos = Array.apply(null, Array(data.length)).map(Boolean.prototype.valueOf,false); 	// init an array full of "false"'s to later populate with images
 	
 	for (var i=0; i<data.length; i++) { // Loop through all the rows of the data
 		var bin = getBin(data, i);

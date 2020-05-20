@@ -17,4 +17,32 @@ var STAMEN_MAP_TYPE = "terrain";		// Set which type of stamen map we want as a b
 										
 var ENGLISH_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];		
 
-var DATA_URL = "https://docs.google.com/spreadsheets/d/1P6Obxu21IhjQFcIBh2N4Cv6fJaMmAyfELEs2tfFWLGI/edit?usp=sharin";
+var DATA_NAMES = {						
+	lat: "Location of the trees -- latitude",
+	lng: "Location of the trees -- longitude",
+	oranges: "How many of each type of trees do you have? [Sweet oranges]",
+	grapefruit: "How many of each type of trees do you have? [Grapefruit]",
+	lemon: "How many of each type of trees do you have? [Lemon]",
+	lime: "How many of each type of trees do you have? [Lime]",
+	other_citrus: "How many of each type of trees do you have? [Other citrus]",
+	prickly_pear: "How many of each type of trees do you have? [Prickly pear]",
+	other: "How many of each type of trees do you have? [Other]",
+	start: "This location typically begins to have fruit",
+	end: "This location typically ceases to have fruit"
+};
+
+NO = 0;
+YES = 1;
+PENDING = "PENDING";
+
+LAT_TOLERANCE = 0.0008;
+LNG_TOLERANCE = 0.0001;
+
+LIMIT_UPPER_LAT = 90;
+LIMIT_LOWER_LAT = -90;
+LIMIT_LOWER_LNG = -180;
+LIMIT_UPPER_LNG = 180;
+
+
+var DATA_URL = "https://docs.google.com/spreadsheets/d/1BrO_uKvGsMov9uQxG9omNZFXMSDu3jLHZX1kSSQ0V2I/edit?usp=sharing";
+
