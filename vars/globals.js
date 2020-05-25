@@ -3,9 +3,10 @@ var map;								// initialize the variable to hold the map
 var EPS = 0.0001; 						// This epsilon is the acceptable difference in lat or lng 										
 										//	between 2 points to classify them as occupying the same location.	
 
-var base = {Markers: [], Popups: []};	 							// Store all info relevant to base points		
+var markers = [];	 							// Store all info relevant to base points		
 
 var AllData;							// Global var to hold all data.
+var RawData;							// global to hold unprocessed data.
 
 var MAP_CENTER = [32.231893,-110.896990];		// Set all map starting parameters
 var MAP_MIN_ZOOM = 2;
@@ -32,6 +33,13 @@ var DATA_NAMES = {
 	time_stamp: "Timestamp"
 };
 
+var START_BOLD = "<strong>";
+var END_BOLD = "</strong>";
+var NEWLINE = "<br>";
+var START_BIG = "<big>";
+var END_BIG = "</big>";
+
+
 var LAT_TOLERANCE = 0.0008;
 var LNG_TOLERANCE = 0.0001;
 
@@ -47,6 +55,8 @@ var DAY_INDEX = 1;
 
 var IN_SEASON = 0;
 var OUT_OF_SEASON = 1; 
+
+var SPACE = "\xa0";
 
 // make sure to follow this order in ICON_URLS and ICON_SIZES!
 var GRAPEFRUIT = 0;
