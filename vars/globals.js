@@ -46,6 +46,20 @@ var LIMIT_UPPER_LNG = 180;
 
 var NONE = "None";
 
+var ICON_URLS = [[https://ask53.github.io/fruit-findr/img/color_grapefruit.png,
+https://ask53.github.io/fruit-findr/img/color_orange.png,
+https://ask53.github.io/fruit-findr/img/color_lemon.png,
+https://ask53.github.io/fruit-findr/img/color_lime.png,
+https://ask53.github.io/fruit-findr/img/color_tuna.png,
+https://ask53.github.io/fruit-findr/img/color_various.png,
+https://ask53.github.io/fruit-findr/img/color_unknown.png],
+[https://ask53.github.io/fruit-findr/img/grey_grapefruit.png,
+https://ask53.github.io/fruit-findr/img/grey_orange.png,
+https://ask53.github.io/fruit-findr/img/grey_lemon.png,
+https://ask53.github.io/fruit-findr/img/grey_lime.png,
+https://ask53.github.io/fruit-findr/img/grey_tuna.png,
+https://ask53.github.io/fruit-findr/img/grey_various.png,
+https://ask53.github.io/fruit-findr/img/grey_unknown.png]]
 
 var DATA_URL = "https://docs.google.com/spreadsheets/d/1BrO_uKvGsMov9uQxG9omNZFXMSDu3jLHZX1kSSQ0V2I/edit?usp=sharing";
 
