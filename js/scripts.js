@@ -272,12 +272,7 @@ function organizeData(d) {
 			}
 		}
 		
-		// determine bin of each plotable point set d[i].bin=the correct bin. 
-		for(var i=0; i<d.length; i++) {
-			d[i].bin = getBin(d, i);	
-		}
 	}
-	
 	AllData = d; 
 	plotData(d);
 }
@@ -321,22 +316,76 @@ function isDuplicate(data, a, b) {
 	}
 }
 
+// returns bin as an array of length 2 where the 0th element is the color:
+// 		0 = color
+//		1 = grey
+// and the 1st element is the icon:
+//		0 = grapefruit
+//		1 = orange
+//		2 = lemon
+//		3 = lime
+// 		4 = prickly pear
+//	 	5 = various fruits	
+//	 	6 = unknown
 function getBin(data, i) {
-	/// placeholder function for now. 
-	// fill this with a function that figures out which
-	//	icon should be used to plot each point.
+	var bin = [0,0];
 	
-	return true; 
+	// get bin[0] based on whether fruit is currently in season
+	var cur = new Date();
+	var year = cur.getFullYear();
+	var start = data[i][DATA_NAMES.start];
+	var end = data[i][DATA_NAMES.end];
+	var startMonth = start.split("/")[MONTH_INDEX];
+	var startDay = start.split("/")[DAY_INDEX];
+	var	endMonth = end.split("/")[MONTH_INDEX];
+	var	endDay = end.split("/")[DAY_INDEX];
+			
+	start = new Date(year, startMonth-1, startDay);
+	end = new Date(year, endMonth-1, endDay);
+	
+	if (start<end) {
+		if (cur >= start & cur < end) {
+			bin[0] = IN_SEASON;
+		} else {
+			bin[0] = OUT_OF_SEASON;
+		}
+	} else {
+		if (cur >= start | cur < end) {
+			bin[0] = IN_SEASON;
+		} else {
+			bin[0] = OUT_OF_SEASON;
+		}
+	}
+	
+	// get bin[1] based on which icon should be displayed
+	if (data[i][DATA_NAMES.grapefruit] != NONE & data[i][DATA_NAMES.oranges] == NONE & data[i][DATA_NAMES.lemon] == NONE & data[i][DATA_NAMES.lime] == NONE & data[i][DATA_NAMES.prickly_pear] == NONE & data[i][DATA_NAMES.other_citrus] == NONE & data[i][DATA_NAMES.other] == NONE) {
+		bin[1] = GRAPEFRUIT;
+	} else if (data[i][DATA_NAMES.grapefruit] == NONE & data[i][DATA_NAMES.oranges] != NONE & data[i][DATA_NAMES.lemon] == NONE & data[i][DATA_NAMES.lime] == NONE & data[i][DATA_NAMES.prickly_pear] == NONE & data[i][DATA_NAMES.other_citrus] == NONE & data[i][DATA_NAMES.other] == NONE) {
+		bin[1] = ORANGE;                                                                                               
+	} else if (data[i][DATA_NAMES.grapefruit] == NONE & data[i][DATA_NAMES.oranges] == NONE & data[i][DATA_NAMES.lemon] != NONE & data[i][DATA_NAMES.lime] == NONE & data[i][DATA_NAMES.prickly_pear] == NONE & data[i][DATA_NAMES.other_citrus] == NONE & data[i][DATA_NAMES.other] == NONE) {
+		bin[1] = LEMON;                                                                                                
+	} else if (data[i][DATA_NAMES.grapefruit] == NONE & data[i][DATA_NAMES.oranges] == NONE & data[i][DATA_NAMES.lemon] == NONE & data[i][DATA_NAMES.lime] != NONE & data[i][DATA_NAMES.prickly_pear] == NONE & data[i][DATA_NAMES.other_citrus] == NONE & data[i][DATA_NAMES.other] == NONE) {
+		bin[1] = LIME;                                                                                                 
+	} else if (data[i][DATA_NAMES.grapefruit] == NONE & data[i][DATA_NAMES.oranges] == NONE & data[i][DATA_NAMES.lemon] == NONE & data[i][DATA_NAMES.lime] == NONE & data[i][DATA_NAMES.prickly_pear] != NONE & data[i][DATA_NAMES.other_citrus] == NONE & data[i][DATA_NAMES.other] == NONE) {
+		bin[1] = TUNA;                                                                                                  
+	} else if (data[i][DATA_NAMES.grapefruit] == NONE & data[i][DATA_NAMES.oranges] == NONE & data[i][DATA_NAMES.lemon] == NONE & data[i][DATA_NAMES.lime] == NONE & data[i][DATA_NAMES.prickly_pear] == NONE & (data[i][DATA_NAMES.other_citrus] != NONE | data[i][DATA_NAMES.other] != NONE)) {
+		bin[1] = UNKNOWN;
+	} else {
+		bin[1] = VARIOUS;
+	}
+	
+	return bin; 
 }
 	
 function plotData(data) {
 	console.log(data)
 	base.Markers = [];
 	for (i=0; i<data.length; i++) {
-		if(data[i].toPlot) {
+		if(data[i].toPlot) {		
+			data[i].bin = getBin(data, i);						// determine bin of each plotable point set d[i].bin=the correct bin. 						
 			var icon = L.icon({ 							// 	to be used when displaying the base markers
-				iconUrl: "img/orange_icon.png",
-				iconSize: [36,36]
+				iconUrl: ICON_URLS[data[i].bin[0]][data[i].bin[1]], 
+				iconSize: ICON_SIZES[data[i].bin[1]]
 			})
 			var latLng = L.latLng([data[i][DATA_NAMES.lat], data[i][DATA_NAMES.lng]]); // Grab the latLng of the point			
 			base.Markers.push( 								// Save the appropriate marker
