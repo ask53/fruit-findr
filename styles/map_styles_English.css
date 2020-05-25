@@ -15,7 +15,9 @@ img.on-map {
 #add-new {
 	top: 15px;
 	right: 15px;
+	height: 5em;
 }
+
 /* CSS style formatting for the labels bound to each marker*/
 .ourLabel {
 	position: absolute;
