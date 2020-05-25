@@ -88,6 +88,8 @@ var LABEL = [["Grapefruit", "Orange", "Lemon", "Lime", "Prickly Pear", "Various"
 
 var OUT_OF_SEASON_MSG = "Sorry! This fruit's season ususally starts around ";
 var IN_SEASON_UNTIL_MSG = "This location typically has fruit until around ";
+var GOOGLE_MAPS_MSG = "View this location on ";
+var GOOGLE_MAPS_LBL = "Google Maps";
 
 var MONTHS_LONG = ["January", "February", "March",
 					"April", "May", "June",

@@ -403,11 +403,9 @@ function getPopup(row) {
 		if (row[DATA_NAMES.prickly_pear] != NONE) {
 			lbl = lbl + START_BOLD + TUNA_LBL + END_BOLD + NEWLINE + String(row[DATA_NAMES.prickly_pear]) + SPACE + CACTUS_MSG + NEWLINE + NEWLINE;
 		} 
-		
-		
-		lbl = lbl + IN_SEASON_UNTIL_MSG + START_BOLD + endMonth + SPACE + endDay + END_BOLD + ".";
-		
-	}
+		lbl = lbl + IN_SEASON_UNTIL_MSG + START_BOLD + endMonth + SPACE + endDay + END_BOLD + "." + NEWLINE + NEWLINE;		
+		lbl = lbl + GOOGLE_MAPS_MSG + "<a target='blank' href='https://www.google.com/maps/place/"+row[DATA_NAMES.lat]+","+row[DATA_NAMES.lng]+"'>"+GOOGLE_MAPS_LBL+"</a>";
+	}	
 	return lbl;
 }
 	
