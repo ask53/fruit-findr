@@ -6,6 +6,16 @@ html, body {width:100%; height:100%; padding: 0; margin: 0;}
 	background: navy;
 }
 
+img.on-map {
+	display: inline-block;
+	position: fixed;
+	z-index: 3;
+}
+
+#add-new {
+	top: 15px;
+	right: 15px;
+}
 /* CSS style formatting for the labels bound to each marker*/
 .ourLabel {
 	position: absolute;

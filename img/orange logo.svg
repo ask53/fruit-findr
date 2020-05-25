@@ -489,8 +489,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.50000001"
-     inkscape:cx="-1195.2526"
-     inkscape:cy="350.55577"
+     inkscape:cx="-1862.7149"
+     inkscape:cy="324.97009"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -11997,5 +11997,33 @@
              sodipodi:role="line">?</tspan></text>
       </g>
     </g>
+    <path
+       style="opacity:1;fill:#a700ff;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m -637.64582,92.212455 c -19.32991,3.8e-5 -34.99989,15.670015 -34.99993,34.999925 4e-5,19.32991 15.67002,34.99989 34.99993,34.99993 l 160.31267,0 c 19.32992,-2e-5 34.99992,-15.67001 34.99996,-34.99993 -4e-5,-19.32992 -15.67004,-34.999904 -34.99996,-34.999925 z"
+       id="rect2869"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:100.27802277px;line-height:125%;font-family:Cabin;-inkscape-font-specification:Cabin;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:6.26737642px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-665.487"
+       y="163.46017"
+       id="text2889"><tspan
+         sodipodi:role="line"
+         id="tspan2887"
+         x="-665.487"
+         y="163.46017"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:6.26737642px;fill:#ffffff;fill-opacity:1">+</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:100.27802277px;line-height:125%;font-family:Cabin;-inkscape-font-specification:Cabin;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:6.26737642px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-579.61371"
+       y="139.71077"
+       id="text2889-0"><tspan
+         sodipodi:role="line"
+         x="-579.61371"
+         y="139.71077"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.48913193px;line-height:0%;font-family:Allan;-inkscape-font-specification:Allan;fill:#ffffff;fill-opacity:1;stroke-width:6.26737642px"
+         id="tspan2909">Add fruit</tspan></text>
   </g>
 </svg>
