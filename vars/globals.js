@@ -28,20 +28,22 @@ var DATA_NAMES = {
 	prickly_pear: "How many of each type of trees do you have? [Prickly pear]",
 	other: "How many of each type of trees do you have? [Other]",
 	start: "This location typically begins to have fruit",
-	end: "This location typically ceases to have fruit"
+	end: "This location typically ceases to have fruit",
+	time_stamp: "Timestamp"
 };
 
-NO = 0;
-YES = 1;
-PENDING = "PENDING";
+var NO = 0;
+var YES = 1;
+var PENDING = "PENDING";
 
-LAT_TOLERANCE = 0.0008;
-LNG_TOLERANCE = 0.0001;
+var LAT_TOLERANCE = 0.0008;
+var LNG_TOLERANCE = 0.0001;
+var LIMIT_UPPER_LAT = 90;
+var LIMIT_LOWER_LAT = -90;
+var LIMIT_LOWER_LNG = -180;
+var LIMIT_UPPER_LNG = 180;
 
-LIMIT_UPPER_LAT = 90;
-LIMIT_LOWER_LAT = -90;
-LIMIT_LOWER_LNG = -180;
-LIMIT_UPPER_LNG = 180;
+var NONE = "None";
 
 
 var DATA_URL = "https://docs.google.com/spreadsheets/d/1BrO_uKvGsMov9uQxG9omNZFXMSDu3jLHZX1kSSQ0V2I/edit?usp=sharing";

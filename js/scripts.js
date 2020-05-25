@@ -200,7 +200,7 @@ function loadData() {
 	var url = DATA_URL;
 	var options = {sendMethod: 'auto'};
 	var query = new google.visualization.Query(url, options);
-	query.setQuery('select * ORDER BY A,B');				// Relies on A being latitude and B being longitude in decimal format. 
+	query.setQuery('select *');				
 	query.send(onQueryResponse);
 							
 }
@@ -238,8 +238,16 @@ function googleDataTable2JSON(dataTable) {
 }
 
 function organizeData(d) {
-	
+	console.log(d);
+	alert;
 	var dupCount = 0;
+	
+	// sort data by timestamp of data entry, most recent first. 
+	// classify all points with incomplete data as toPlot=FALSE
+	// classify all duplicates as toPlot=FALSE
+	// fill array of d[i].dups = [index dup1, index dup2, ... , index dup_n] on the first (plotable) point. 
+	// determine bin of each plotable point set d[i].bin=the correct bin. 
+	
 	for (var i=0; i<d.length; i++) {
 		if(hasData(d,i)) {
 			alert("no error = 0")
@@ -285,7 +293,7 @@ function hasData(d, i) {
 		alert("2")
 		return false
 	}
-	if (!d[i][DATA_NAMES.oranges] & !d[i][DATA_NAMES.grapefruit] & !d[i][DATA_NAMES.lemon] & !d[i][DATA_NAMES.lime] & !d[i][DATA_NAMES.other_citrus] & !d[i][DATA_NAMES.prickly_pear] & !d[i][DATA_NAMES.other]) {
+	if (d[i][DATA_NAMES.oranges] == NONE & d[i][DATA_NAMES.grapefruit] == NONE & d[i][DATA_NAMES.lemon] == NONE & d[i][DATA_NAMES.lime] == NONE & d[i][DATA_NAMES.other_citrus] == NONE & d[i][DATA_NAMES.prickly_pear] == NONE & d[i][DATA_NAMES.other] == NONE) {
 		alert("3")
 		return false;
 	}
