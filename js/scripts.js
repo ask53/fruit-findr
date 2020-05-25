@@ -25,7 +25,6 @@
 //
 // 	Update history:		4/APR/2018	aaron krupp		functional specification writen 
 
-//-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 function init() {
 	if(detectMobile()) {adjustDisplayForMobile()} 
 								// check for mobile and adjust text size appropriately
@@ -36,7 +35,6 @@ function init() {
 	loadData(); 				// Load the data for the default contaminant 
 								// 	then plot the base markers on the map.	 	
 }								
-//-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 
 
 // 	2. fillText():
@@ -151,11 +149,10 @@ function initMap() {
 //
 // 	Update history:		4/APR/2018	aaron krupp		functional specification writen
 
-//-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 function applyBaseMap(id) {
 	map.addLayer(new L.StamenTileLayer(STAMEN_MAP_TYPE), {});
 }
-//-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
+
 
 // 	7. LoadData():
 //
@@ -195,7 +192,6 @@ function applyBaseMap(id) {
 //
 // 	Update history:		4/APR/2018	aaron krupp		functional specification writen
 
-//-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
 function loadData() {
 	var url = DATA_URL;
 	var options = {sendMethod: 'auto'};
@@ -631,9 +627,8 @@ function detectMobile() {
 //
 // 	Update history:		07/MAR/2019	aaron krupp		functional specification & fn added
 
-//-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-
+
 function adjustDisplayForMobile() {
 	document.getElementById("overlay_title").style.fontSize = "36px";
 	document.getElementById("overlay_msg").style.fontSize = "22px";
 }
-//-!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!--!-

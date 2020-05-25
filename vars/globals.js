@@ -1,8 +1,5 @@
 var map;								// initialize the variable to hold the map
 										
-var EPS = 0.0001; 						// This epsilon is the acceptable difference in lat or lng 										
-										//	between 2 points to classify them as occupying the same location.	
-
 var markers = [];	 							// Store all info relevant to base points		
 
 var AllData;							// Global var to hold all data.
@@ -16,8 +13,6 @@ var MAP_INIT_ZOOM = 11;
 var STAMEN_MAP_TYPE = "terrain";		// Set which type of stamen map we want as a base layer.
 										// 	options include: "terrain", "watercolor", and "toner"	
 										
-var ENGLISH_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];		
-
 var DATA_NAMES = {						
 	lat: "Location of the trees -- latitude",
 	lng: "Location of the trees -- longitude",
