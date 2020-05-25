@@ -238,202 +238,253 @@ function googleDataTable2JSON(dataTable) {
 }
 
 function organizeData(d) {
-	console.log(d);
-	alert;
-	var dupCount = 0;
-	
-	// sort data by timestamp of data entry, most recent first. 
-	// classify all points with incomplete data as toPlot=FALSE
-	// classify all duplicates as toPlot=FALSE
-	// fill array of d[i].dups = [index dup1, index dup2, ... , index dup_n] on the first (plotable) point. 
-	// determine bin of each plotable point set d[i].bin=the correct bin. 
-	
-	for (var i=0; i<d.length; i++) {
-		if(hasData(d,i)) {
-			alert("no error = 0")
-			d[i].dataError = NO;
-		} else {
-			alert("error = 1")
-			d[i].dataError = YES;
-		}
-	}
-	console.log(d)
-	return;
 	if (!d | d.length == 0) { // if no data is found...
 		alert("\nWe're having some trouble finding fruit for you, please check back again soon!\n\nIf you still see this message in a few hours, please let us know.\n\n\n")
 		return;
 	} else {
+		
+		// remove all incomplete data
+		var toRemove = []
 		for (var i=0; i<d.length; i++) {
-			if (!toPlot(d, i)) {
-				dupCount++;
-				d[i].toPlot = NO;
-			} else {
-				d[i].toPlot = PENDING;
-				if(i>0) {
-					d[i-(dupCount+1)].toPlot = YES;
-					d[i-(dupCount+1)].dups = dupCount+1;
-					dupCount = 0;
+			d[i].dup = [];
+			if(!hasData(d,i)) {
+				toRemove.push(i);
+			}
+		}
+		d = removeData(d, toRemove)
+		
+		// sort data by timestamp of data entry, most recent first.
+		d.sort(function(a,b) {
+			return b[DATA_NAMES.time_stamp]-a[DATA_NAMES.time_stamp];
+		});
+		
+		// classify all points as toPlot=TRUE
+		// classify all duplicates as toPlot=FALSE
+		// fill array of d[i].dups = [index dup1, index dup2, ... , index dup_n] on the first (plotable) point. 
+		for(var i=0; i<d.length; i++) {
+			d[i].toPlot = true;
+			for (var j=0; j<i; j++) {
+				if (isDuplicate(d, i, j)) {
+					d[j].dup.push(i);
+					d[i].toPlot = false;
+					break;
 				}
 			}
 		}
-	AllData = d;
-	//plotData(data)
+		
+		// determine bin of each plotable point set d[i].bin=the correct bin. 
+		for(var i=0; i<d.length; i++) {
+			d[i].bin = getBin(d, i);	
+		}
 	}
 	
-	
+	AllData = d; 
+	plotData(d);
 }
 
+
+// IDENTIFIES WHETHER A ROW OF DATA HAS (a) A VALID LATITUDE, (b) A VALID LONGITUDE, (c) SOME FRUIT LISTED, AND (d) A VALID TIMESTAMP 
 function hasData(d, i) {
 	// first check to make sure there is non-zero data
 	if (d[i][DATA_NAMES.lat] > LIMIT_UPPER_LAT | d[i][DATA_NAMES.lat] < LIMIT_LOWER_LAT) {
-		alert("1")
-		return false
+		return false;
 	}
 	if (d[i][DATA_NAMES.lng] > LIMIT_UPPER_LNG | d[i][DATA_NAMES.lng] < LIMIT_LOWER_LNG) {
-		alert("2")
-		return false
+		return false;
 	}
 	if (d[i][DATA_NAMES.oranges] == NONE & d[i][DATA_NAMES.grapefruit] == NONE & d[i][DATA_NAMES.lemon] == NONE & d[i][DATA_NAMES.lime] == NONE & d[i][DATA_NAMES.other_citrus] == NONE & d[i][DATA_NAMES.prickly_pear] == NONE & d[i][DATA_NAMES.other] == NONE) {
-		alert("3")
+		return false;
+	}
+	if (!d[i][DATA_NAMES.time_stamp] | typeof d[i][DATA_NAMES.time_stamp] != "object"){
 		return false;
 	}
 	return true;	
 }
+
+// Removes the rows of data from array 'd' at the indices listed in array 'indices'. 
+function removeData(d, indices) {
+	indices.sort(function (a,b) {
+		return a-b;
+	}) 	
+	for (var i=indices.length-1; i>=0; i--) {
+		d.splice(indices[i], 1)
+	}
+	return d
+}
+
+function isDuplicate(data, a, b) {
+	if(Math.abs(data[a][DATA_NAMES.lat] - data[b][DATA_NAMES.lat]) < LAT_TOLERANCE 
+	& Math.abs(data[a][DATA_NAMES.lng] - data[b][DATA_NAMES.lng]) < LNG_TOLERANCE ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function getBin(data, i) {
+	/// placeholder function for now. 
+	// fill this with a function that figures out which
+	//	icon should be used to plot each point.
+	
+	return true; 
+}
 	
 function plotData(data) {
-	
+	console.log(data)
 	base.Markers = [];
-	base.Popups = [];
-	var duplicateCounter = 0;
-	
-	AllData = data; 				// store data as global for later access.
-
-	if (!AllData | AllData.length == 0) { // if no data is found...
-		alert("\nWe're having some trouble finding fruit for you, please check back again soon!\n\nIf you still see this message in a few hours, please let us know.\n\n\n")
-	} else {
-		for (var i=0; i<data.length; i++) {
-			if (!toPlot(data, i)) {
-				duplicateCounter++;
-			} else {
-				if(i>0) {
-					AllData[i-1].data 
-				}
+	for (i=0; i<data.length; i++) {
+		if(data[i].toPlot) {
+			var icon = L.icon({ 							// 	to be used when displaying the base markers
+				iconUrl: "img/orange_icon.png",
+				iconSize: [36,36]
+			})
+			var latLng = L.latLng([data[i][DATA_NAMES.lat], data[i][DATA_NAMES.lng]]); // Grab the latLng of the point			
+			base.Markers.push( 								// Save the appropriate marker
+				L.marker(latLng, {
+					icon: icon,
+					riseOnHover: true,
+					zIndexOffset: 10
+				})
+			)
+			base.Markers[base.Markers.length-1].addTo(map); 		// And finally, actually add the markers to the map!
 				
-			}
-			
-			
-			
 			
 			
 		}
 		
-		
 	}
-	
-	
-	
-	
-	for (var i=0; i<data.length; i++) { // Loop through all the rows of the data
-		var bin = getBin(data, i);
-		if (isEmpty(i, "name") | isEmpty(i, "lat") | isEmpty(i, "lng") | bin == -1) { 		// if the row is missing a name, latitutde, or longitude, or doesn't fit a bin,
-		} else {																			//	ignore it. Otherwise:
-			if (i==0 || data[i][DATA_NAMES.name] != data[i-1][DATA_NAMES.name]) {			// if not a duplicate point (special case for 0th point, cause 0-1 does not exist)
-				duplicateCounter = 0;
-				AllData[i].duplicates = [i]; 		// create a new array in AllData called duplicates to hold indices of duplicates of this point
-				AllData[i].bin = bin;
-				if (isEmpty(i, "photo")) { // if there's no photo, do nothing
-				} else { 							// if there's a photo, get it from the link and store it in the browser
-					photos[i] = new Image();
-					photos[i].src = data[i][DATA_NAMES.photo];
-				}
-				
-				
-				
-				
-				var icon = L.icon({ 							// 	to be used when displaying the base markers
-					iconUrl: ICON_URLS[bin],
-					iconSize: SMALL_ICON_SIZE
-				})
-				var latLng = L.latLng([data[i][DATA_NAMES.lat], data[i][DATA_NAMES.lng]]); // Grab the latLng of the point			
-				used_indices.push(i);
-				base.Markers.push( 								// Save the appropriate marker
-					L.marker(latLng, {
-						icon: icon,
-						riseOnHover: true,
-						zIndexOffset: BASE_Z_OFFSET
-					})
-					.on('click', function(event) {
-						
-						click_lat = event.latlng.lat; 			// Grab the latLng of the cliked point 
-																// 	(returns value of marker's center, regardless of where is clicked...)
-						var j = base.Markers.map(function(a) {return a._latlng.lat}).indexOf(click_lat);
-																// this confusing line gets the index in base.Markers
-																//	of the point with the same latitude as the clicked point
-																// 	we'll use that index to access the marker, label, and data.
-						var z = used_indices[j];				// Then get the index of the point in AllData.
-						
-						if (AllData[z].duplicates.length > 1) { // if the current point HAS duplicates:
-							if(!info_panel_open && !lobby_active) {		// and the info panel and lobby are both closed
-								info_being_displayed = z;		// set the info to display as this point
-								showLobby(z);					// show the lobby for this point, since it has multiple projects
-						
-								openPanel('lobby');				// open the info panel
-							} else if ((info_panel_open || lobby_active) && info_being_displayed != z ) {	// if the info panel or lobby are open and not displaying this point
-								info_being_displayed = z;		// change the info being displayed to this point
-								closePanel('info_panel');
-								showLobby(z);					// show the lobby since this point has multiple projects
-								openPanel('lobby');
-							}	 
-						} else {								// If the selected point DOESN'T have duplicates
-							if (!info_panel_open) {				// and the info panel is closed
-								info_being_displayed = z;		// set the info being displayed to this point
-																// push the info for this community/project to the info panel
-								if (lobby_active) {
-									closePanel('lobby');			// close the lobby in case it's open
-								}
-								showInfo(z);
-								openPanel('info_panel');				// open the info panel
-							} else if (info_panel_open && info_being_displayed != z) {	// if the info panel is open, but showing a different point
-								info_being_displayed = z;		// change the info being displayed to this point
-								showInfo(z);					// push the current info to the info panel. 
-							}
-						}
-						
-					})
-				);
-				base.Markers[base.Markers.length-1].bindLabel(getLabel(data, i), {
-					noHide: false,										// attach labels to all the base points 
-					className: "ourLabel"								//	that activate during mouseover
-				});
-				base.Markers[base.Markers.length-1].addTo(map); 		// And finally, actually add the markers to the map!
-		
-		
-			} else {													// if i is a duplicate
-				duplicateCounter = duplicateCounter + 1;				// increment the duplicate counter
-				AllData[i-duplicateCounter].duplicates.push(i);
-				AllData[i].isDuplicate = true;
-				AllData[i-1].isDuplicate = true;
-				bin = getBin(data, i);
-				AllData[i].bin = bin;
-				if (AllData[i-1].bin == VARIOUS) {
-					bin = VARIOUS;
-				} else if (bin != AllData[i-1].bin) {
-					bin = VARIOUS;
-					AllData[i-1].bin = VARIOUS;
-					
-					map.removeLayer(base.Markers[base.Markers.length-1]);
-					base.Markers[base.Markers.length-1].options.icon.options.iconUrl = ICON_URLS[VARIOUS];
-					base.Markers[base.Markers.length-1].addTo(map);
-				}
-				AllData[i].bin = bin;	
-				if (isEmpty(i, "photo")) { // if there's no photo, do nothing
-				} else { 							// if there's a photo, get it from the link and store it in the browser
-					photos[i] = new Image();
-					photos[i].src = data[i][DATA_NAMES.photo];
-				}	
-			}	
-		};
-	};
+	//base.Markers = [];
+	//base.Popups = [];
+	//var duplicateCounter = 0;
+	//
+	//AllData = data; 				// store data as global for later access.
+    //
+	//if (!AllData | AllData.length == 0) { // if no data is found...
+	//	alert("\nWe're having some trouble finding fruit for you, please check back again soon!\n\nIf you still see this message in a few hours, please let us know.\n\n\n")
+	//} else {
+	//	for (var i=0; i<data.length; i++) {
+	//		if (!toPlot(data, i)) {
+	//			duplicateCounter++;
+	//		} else {
+	//			if(i>0) {
+	//				AllData[i-1].data 
+	//			}
+	//			
+	//		}
+	//		
+	//		
+	//		
+	//		
+	//		
+	//	}
+	//	
+	//	
+	//}
+	//
+	//
+	//
+	//
+	//for (var i=0; i<data.length; i++) { // Loop through all the rows of the data
+	//	var bin = getBin(data, i);
+	//	if (isEmpty(i, "name") | isEmpty(i, "lat") | isEmpty(i, "lng") | bin == -1) { 		// if the row is missing a name, latitutde, or longitude, or doesn't fit a bin,
+	//	} else {																			//	ignore it. Otherwise:
+	//		if (i==0 || data[i][DATA_NAMES.name] != data[i-1][DATA_NAMES.name]) {			// if not a duplicate point (special case for 0th point, cause 0-1 does not exist)
+	//			duplicateCounter = 0;
+	//			AllData[i].duplicates = [i]; 		// create a new array in AllData called duplicates to hold indices of duplicates of this point
+	//			AllData[i].bin = bin;
+	//			if (isEmpty(i, "photo")) { // if there's no photo, do nothing
+	//			} else { 							// if there's a photo, get it from the link and store it in the browser
+	//				photos[i] = new Image();
+	//				photos[i].src = data[i][DATA_NAMES.photo];
+	//			}
+	//			
+	//			
+	//			
+	//			
+	//			var icon = L.icon({ 							// 	to be used when displaying the base markers
+	//				iconUrl: ICON_URLS[bin],
+	//				iconSize: SMALL_ICON_SIZE
+	//			})
+	//			var latLng = L.latLng([data[i][DATA_NAMES.lat], data[i][DATA_NAMES.lng]]); // Grab the latLng of the point			
+	//			used_indices.push(i);
+	//			base.Markers.push( 								// Save the appropriate marker
+	//				L.marker(latLng, {
+	//					icon: icon,
+	//					riseOnHover: true,
+	//					zIndexOffset: BASE_Z_OFFSET
+	//				})
+	//				.on('click', function(event) {
+	//					
+	//					click_lat = event.latlng.lat; 			// Grab the latLng of the cliked point 
+	//															// 	(returns value of marker's center, regardless of where is clicked...)
+	//					var j = base.Markers.map(function(a) {return a._latlng.lat}).indexOf(click_lat);
+	//															// this confusing line gets the index in base.Markers
+	//															//	of the point with the same latitude as the clicked point
+	//															// 	we'll use that index to access the marker, label, and data.
+	//					var z = used_indices[j];				// Then get the index of the point in AllData.
+	//					
+	//					if (AllData[z].duplicates.length > 1) { // if the current point HAS duplicates:
+	//						if(!info_panel_open && !lobby_active) {		// and the info panel and lobby are both closed
+	//							info_being_displayed = z;		// set the info to display as this point
+	//							showLobby(z);					// show the lobby for this point, since it has multiple projects
+	//					
+	//							openPanel('lobby');				// open the info panel
+	//						} else if ((info_panel_open || lobby_active) && info_being_displayed != z ) {	// if the info panel or lobby are open and not displaying this point
+	//							info_being_displayed = z;		// change the info being displayed to this point
+	//							closePanel('info_panel');
+	//							showLobby(z);					// show the lobby since this point has multiple projects
+	//							openPanel('lobby');
+	//						}	 
+	//					} else {								// If the selected point DOESN'T have duplicates
+	//						if (!info_panel_open) {				// and the info panel is closed
+	//							info_being_displayed = z;		// set the info being displayed to this point
+	//															// push the info for this community/project to the info panel
+	//							if (lobby_active) {
+	//								closePanel('lobby');			// close the lobby in case it's open
+	//							}
+	//							showInfo(z);
+	//							openPanel('info_panel');				// open the info panel
+	//						} else if (info_panel_open && info_being_displayed != z) {	// if the info panel is open, but showing a different point
+	//							info_being_displayed = z;		// change the info being displayed to this point
+	//							showInfo(z);					// push the current info to the info panel. 
+	//						}
+	//					}
+	//					
+	//				})
+	//			);
+	//			base.Markers[base.Markers.length-1].bindLabel(getLabel(data, i), {
+	//				noHide: false,										// attach labels to all the base points 
+	//				className: "ourLabel"								//	that activate during mouseover
+	//			});
+	//			base.Markers[base.Markers.length-1].addTo(map); 		// And finally, actually add the markers to the map!
+	//	
+	//	
+	//		} else {													// if i is a duplicate
+	//			duplicateCounter = duplicateCounter + 1;				// increment the duplicate counter
+	//			AllData[i-duplicateCounter].duplicates.push(i);
+	//			AllData[i].isDuplicate = true;
+	//			AllData[i-1].isDuplicate = true;
+	//			bin = getBin(data, i);
+	//			AllData[i].bin = bin;
+	//			if (AllData[i-1].bin == VARIOUS) {
+	//				bin = VARIOUS;
+	//			} else if (bin != AllData[i-1].bin) {
+	//				bin = VARIOUS;
+	//				AllData[i-1].bin = VARIOUS;
+	//				
+	//				map.removeLayer(base.Markers[base.Markers.length-1]);
+	//				base.Markers[base.Markers.length-1].options.icon.options.iconUrl = ICON_URLS[VARIOUS];
+	//				base.Markers[base.Markers.length-1].addTo(map);
+	//			}
+	//			AllData[i].bin = bin;	
+	//			if (isEmpty(i, "photo")) { // if there's no photo, do nothing
+	//			} else { 							// if there's a photo, get it from the link and store it in the browser
+	//				photos[i] = new Image();
+	//				photos[i].src = data[i][DATA_NAMES.photo];
+	//			}	
+	//		}	
+	//	};
+	//};
 
 
 	
